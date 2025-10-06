@@ -1,7 +1,9 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+// next.config.mjs
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  turbopack: {
+    // Make the workspace root explicit so Next.js doesn't guess the parent folder
+    root: ".",
+  },
 };
-
 export default nextConfig;
