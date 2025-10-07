@@ -7,19 +7,21 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 type NavItem = { href: string; label: string };
-
 const NAV: NavItem[] = [
+  { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/industries", label: "Industries" },
+  { href: "/about", label: "About Us" },
   { href: "/case-studies", label: "Case Studies" },
-  { href: "/contact", label: "Contact" },
+  { href: "/blog", label: "Blog" },
+  { href: "/contact", label: "Contacts" }, // label per wireframe; path stays /contact
 ];
 
 export default function Header() {
-  const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
-  // Lock background scroll when mobile menu is open (also prevents "text under overlay" feeling)
+  // lock background scroll when mobile menu is open
   useEffect(() => {
     const root = document.documentElement;
     const prevOverflow = root.style.overflow;
@@ -44,21 +46,22 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-[100] border-b bg-white/80 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-[1280px] items-center px-4">
+      {/* 3-column grid ensures centered nav + CTA on far right */}
+      <div className="mx-auto grid h-16 max-w-[1280px] grid-cols-[auto_1fr_auto] items-center px-4">
         {/* Left: Logo */}
         <Link href="/" className="text-lg font-semibold tracking-tight">
-          Netciples
+          Logo
         </Link>
 
-        {/* Middle: Desktop nav */}
-        <nav className="ml-8 hidden items-center gap-8 text-sm md:flex">
-          {NAV.map((item) => (
+        {/* Center: Desktop nav (hover underline + active underline) */}
+        <nav className="hidden md:flex items-center justify-center gap-8 text-sm">
+          {NAV.slice(0, 6).map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={[
-                "transition-colors",
-                "hover:underline underline-offset-[6px] decoration-2",
+                "transition-colors underline-offset-[6px] decoration-2",
+                "hover:underline",
                 isActive(item.href)
                   ? "underline decoration-neutral-900 text-neutral-900"
                   : "text-neutral-700 hover:text-neutral-900",
@@ -69,34 +72,35 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Right: Desktop CTA (pill with shine) */}
-        <Link
-          href="/contact"
-          className="btn-cta relative ml-auto hidden h-10 items-center overflow-hidden rounded-full bg-black px-5 text-sm font-medium text-white shadow-[0_10px_22px_-12px_rgba(0,0,0,0.35)] md:inline-flex"
-        >
-          <span className="relative z-10">Request a Consultation</span>
-          <span aria-hidden className="shine pointer-events-none absolute inset-0" />
-        </Link>
+        {/* Right: Desktop CTA + Mobile hamburger */}
+        <div className="ml-4 flex items-center gap-3 justify-end">
+          {/* Desktop CTA pill with shine */}
+          <Link
+            href="/contact"
+            className="btn-cta relative hidden h-10 items-center overflow-hidden rounded-full bg-black px-5 text-sm font-medium text-white shadow-[0_10px_22px_-12px_rgba(0,0,0,0.35)] md:inline-flex"
+          >
+            <span className="relative z-10">Get a Free Consultation</span>
+            <span aria-hidden className="shine pointer-events-none absolute inset-0" />
+          </Link>
 
-        {/* Right: Mobile hamburger (far right) */}
-        <button
-          aria-label="Open menu"
-          onClick={() => setOpen(true)}
-          className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-md border border-neutral-200 md:hidden"
-        >
-          <Menu className="h-5 w-5 text-neutral-900" />
-        </button>
+          {/* Mobile hamburger (far right) */}
+          <button
+            aria-label="Open menu"
+            onClick={() => setOpen(true)}
+            className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-md border border-neutral-200 md:hidden"
+          >
+            <Menu className="h-5 w-5 text-neutral-900" />
+          </button>
+        </div>
       </div>
 
-      {/* Mobile drawer overlay (highest z to beat maps/cards) */}
+      {/* Mobile drawer overlay (very high z; dark scrim) */}
       {open && (
         <div className="fixed inset-0 z-[9999] md:hidden">
-          {/* Backdrop: darker, no blur (so bg text doesn’t show through) */}
           <div
-            className="absolute inset-0 bg-black/70"
+            className="absolute inset-0 bg-black/75"
             onClick={() => setOpen(false)}
           />
-          {/* Slide-in panel */}
           <div
             role="dialog"
             aria-modal="true"
@@ -122,7 +126,9 @@ export default function Header() {
                   className={[
                     "rounded-md px-3 py-3",
                     "hover:bg-neutral-100",
-                    isActive(item.href) ? "font-semibold text-neutral-900" : "text-neutral-800",
+                    isActive(item.href)
+                      ? "font-semibold text-neutral-900"
+                      : "text-neutral-800",
                   ].join(" ")}
                 >
                   {item.label}
@@ -133,7 +139,7 @@ export default function Header() {
                 onClick={() => setOpen(false)}
                 className="mt-2 rounded-full bg-black px-4 py-3 text-center text-sm font-medium text-white hover:bg-neutral-900"
               >
-                Request a Consultation
+                Get a Free Consultation
               </Link>
             </nav>
           </div>
@@ -143,12 +149,8 @@ export default function Header() {
       {/* CTA shine animation (scoped) */}
       <style jsx global>{`
         @keyframes shine {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
         }
         .btn-cta .shine {
           background: linear-gradient(
@@ -159,9 +161,7 @@ export default function Header() {
           );
           transform: translateX(-100%);
         }
-        .btn-cta:hover .shine {
-          animation: shine 1.15s ease-in-out;
-        }
+        .btn-cta:hover .shine { animation: shine 1.1s ease-in-out; }
       `}</style>
     </header>
   );
