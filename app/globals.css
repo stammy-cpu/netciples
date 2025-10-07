@@ -72,3 +72,4 @@ html, body { height: 100%; }
 .animate-float3 {
   animation: float3 9s ease-in-out infinite;
 }
+html { scroll-behavior: smooth; }
