@@ -2,31 +2,22 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Netciples — Reliable IT Solutions",
-  description:
-    "Managed IT, Cloud, Cybersecurity, and Consulting for growing businesses.",
-  metadataBase: new URL("https://netciples.example.com"),
-  openGraph: {
-    title: "Netciples — Reliable IT Solutions",
-    description:
-      "Managed IT, Cloud, Cybersecurity, and Consulting for growing businesses.",
-    url: "https://netciples.example.com",
-    siteName: "Netciples",
-    type: "website",
-  },
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  title: "Netciples",
+  description: "Reliable IT solutions for your business growth",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body className="bg-white text-black antialiased">
+      <body>
         <Header />
-        <main className="min-h-[60vh]">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
